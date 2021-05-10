@@ -7,13 +7,13 @@ def get_cleaned_data(filename):
     for column in data_raw:
         if column == 'Date':
             continue
-        column_data = data_raw.sort_values(by=column)[column]
-        Q3_index = math.ceil(75/100 * len(column_data))
-        Q1_index = math.ceil(25/100 * len(column_data))
+        sorted_column_data = data_raw.sort_values(by=column)[column]
+        Q3_index = math.ceil(75/100 * len(sorted_column_data))
+        Q1_index = math.ceil(25/100 * len(sorted_column_data))
         alpha = 1.5
-        IQR = column_data[Q3_index] - column_data[Q1_index]
-        upper_threshold = column_data[Q3_index] + alpha * IQR
-        lower_threshold = column_data[Q1_index] - alpha * IQR
+        IQR = sorted_column_data[Q3_index] - sorted_column_data[Q1_index]
+        upper_threshold = sorted_column_data[Q3_index] + alpha * IQR
+        lower_threshold = sorted_column_data[Q1_index] - alpha * IQR
 
         outliers = data_raw[(data_raw[column] != 0) & ((data_raw[column] > upper_threshold) | (data_raw[column] < lower_threshold))].index
 
