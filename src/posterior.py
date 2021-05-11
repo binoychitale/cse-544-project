@@ -16,7 +16,7 @@ def plot_posterior(a, b, week):
     # Generate PDF for gamma(a,b) for each x
     y_pdf = gamma.pdf(x_points, a=a, scale=b)
 
-    map_val = round(y_pdf.max(), 3)
+    map_val = round(x_points[y_pdf.argmax()], 3)
     print("MAP for week {0} Posterior Distribution of λ = {1}".format(week, map_val))
     plt.plot(x_points, y_pdf, label = 'Posterior: Week {0}, MAP = {1}'.format(week, map_val))
 
