@@ -1,5 +1,4 @@
 import clean
 
-data = clean.get_cleaned_data("../data/States Data/4.csv")
-clean.get_daily_data(data)
+data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv")
 #print(data)
