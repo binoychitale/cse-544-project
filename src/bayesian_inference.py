@@ -58,7 +58,6 @@ def perform_bayesian_inference(daily_data):
         mme_end_date = mme_start_date + pd.DateOffset(days=7)
 
         observations = np.array(daily_data[(daily_data['Date'] >= mme_start_date) & (daily_data['Date'] < mme_end_date)]['combined_deaths'])
-        print(observations)
         bayesian_estimator.get_posterior(observations)
         plot_pdf(bayesian_estimator, i + 1)
     plt.legend()
