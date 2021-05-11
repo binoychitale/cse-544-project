@@ -34,6 +34,6 @@ def get_daily_data(cumulative_data):
     for column in cumulative_data:
         if column == 'Date':
             continue
-        cumulative_data[column] = cumulative_data[column].diff()
+        cumulative_data[column] = cumulative_data[column].diff().fillna(0)
 
     return cumulative_data
