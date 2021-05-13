@@ -39,11 +39,12 @@ def perform_auto_regression(data, order):
         print()
         MSE = 0
         MAPE = 0
-
-        training_data = data[(data['Date'] >= '2020-08-01') & (data['Date'] < '2020-08-22')]
-        ar.train(np.float_(np.array(training_data[column])))
         for end in range(22, 29):
             end_date = '2020-08-%s' % end
+
+            training_data = data[(data['Date'] >= '2020-08-01') & (data['Date'] < end_date)]
+
+            ar.train(np.float_(np.array(training_data[column])))
 
             input_values = [0]
             date_val = pd.to_datetime(end_date)
