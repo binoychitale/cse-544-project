@@ -68,6 +68,7 @@ def get_datasets_for_pearsons_test(daily_cases_df, flight_df, date_from, date_to
 
 # dates should be between 22 Jan 2020 and 30 Jun 2020
 def perform_pearsons_correlation_test(state, date_from, date_to, flights_df, cases_df):
+    print("\n{0} Exploratory X Dataset Inference 1: Pearson's Coefficient to test for Correlation {0}".format(20*"-"))
     cancelled_flights = get_cancelled_flights_df(state, flights_df)
     x, y = get_datasets_for_pearsons_test(cases_df, cancelled_flights, date_from, date_to)
     test = PearsonsTest(x, y)
