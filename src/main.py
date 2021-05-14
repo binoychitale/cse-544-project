@@ -5,6 +5,7 @@ import ewma
 import one_sample_ks_perm
 from ks_test import KS_2_Sample_Test
 from hypothesis_tests import run_hypothesis_tests
+from posterior import calculate_posterior
 
 import exploratory
 
@@ -27,6 +28,9 @@ one_sample_ks_perm.KS_1_sample_main(daily_data)
 one_sample_ks_perm.Permutation_main(daily_data)
 KS_2_Sample_Test(daily_data, 'confirmed')
 KS_2_Sample_Test(daily_data, 'deaths')
+
+# 2d) Apply Bayesian Inference to calculate the posterior for combined deaths data
+calculate_posterior(daily_data)
 
 # B) Exploratory tasks to be performed using US-all and X datasets. We have chosen our X dataset to be US domestic Flights cancellation data from Jan-Jun 2020.
 # Full dataset can be found at https://www.kaggle.com/akulbahl/covid19-airline-flight-delays-and-cancellations?select=jantojun2020.csv
