@@ -93,7 +93,7 @@ def plot_KS_1_Sample_eCDF(DC_df, DC_col_name, max_diff_x, x_label, distribution_
     x_points_DC = DC_df[DC_col_name].to_numpy()
     y_ecdf_DC = DC_df['DC_eCDF'].to_numpy()
 
-    plt.figure('KS 2-Sample Test eCDF', figsize=(6,6))
+    plt.figure('KS 1-Sample Test eCDF', figsize=(6,6))
     plt.step(x_points_DC, y_ecdf_mme, where='post', lw = 1.5, label=distribution_type+ ' CDF')
     plt.step(x_points_DC, y_ecdf_DC, where='post', lw = 1.5, label='DC eCDF')
     for x in max_diff_x:
@@ -306,13 +306,3 @@ def Permutation_main(states_data):
     Permutation_test(states_data,'deaths')
     print("**************Permutation test ends here***********")
     print()
-    
-def main():
-    #Cleaning and removing outliers from data
-    data_raw, daily_data = clean.get_cleaned_data("../data/States Data/4.csv")
-    KS_1_sample_main(daily_data)
-    Permutation_main(daily_data)
-    
-if __name__=="__main__":
-    main()
-    
