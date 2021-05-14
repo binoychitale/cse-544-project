@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat May  8 19:08:51 2021
-
-@author: sahil.pawar
 
 Code to calculate KS 1 sample test and accept/reject hypothesis(2c)
 Code to calculate Permutation test and accept/reject hypothesis(2c)
@@ -18,6 +15,7 @@ from scipy.stats import geom
 from scipy.stats import binom
 import matplotlib.pyplot as plt
 import math
+import clean
 
 
 # Calculate CDF for the number of cases/deaths on each day
@@ -89,6 +87,25 @@ def binomial_para(mean,variance):
     
     return n_mme,p_mme
 
+def plot_KS_1_Sample_eCDF(DC_df, DC_col_name, max_diff_x, x_label, distribution_type):
+    
+    y_ecdf_mme = DC_df['DC_eCDF_mme'].to_numpy()
+    x_points_DC = DC_df[DC_col_name].to_numpy()
+    y_ecdf_DC = DC_df['DC_eCDF'].to_numpy()
+
+    plt.figure('KS 2-Sample Test eCDF', figsize=(6,6))
+    plt.step(x_points_DC, y_ecdf_mme, where='post', lw = 1.5, label=distribution_type+ ' CDF')
+    plt.step(x_points_DC, y_ecdf_DC, where='post', lw = 1.5, label='DC eCDF')
+    for x in max_diff_x:
+        plt.axvline(x, linestyle="dashed", lw=1)
+
+    plt.xlabel(x_label)
+    plt.ylabel('eCDF')
+    plt.legend(loc='best')
+    plt.grid()
+    plt.show()
+
+
 
 #Calculates KS Statistic Values
 def calc_KS_1_sample_test(x_points, parameters_list, data, distribution_name, column_type , column_name):
@@ -144,9 +161,13 @@ def calc_KS_1_sample_test(x_points, parameters_list, data, distribution_name, co
 
     if d > critical_value:
         print("Rejected Null Hypothesis: We reject the hypothesis that the distribution of daily {0} is same in both CT and DC, as KS Statistic d = {1} exceeds threshold {2}".format(hypothesis_type, d, critical_value))
+        print()
     else:
         print("Failed to reject Null Hypothesis: We accept the hypothesis that the distribution of daily {0} is same in both CT and DC, as KS Statistic d = {1} does not exceed threshold {2}".format(hypothesis_type, d, critical_value))
+        print()
         
+        
+    return max_diff_x
 
 #Generates required data before calling calculation of KS 1 sample test statistic 
 def KS_1_sample_test(states_data,column_type, distribution_type):
@@ -172,7 +193,11 @@ def KS_1_sample_test(states_data,column_type, distribution_type):
         #MME parameters
         lambda_mme = poisson_para(mean)
         #Calls calculation of KS 1 sample statistic 
-        calc_KS_1_sample_test(x_points, [lambda_mme] , DC_distinct_df , 'poisson', column_type,DC_col_name )
+        max_diff_x = calc_KS_1_sample_test(x_points, [lambda_mme] , DC_distinct_df , 'poisson', column_type,DC_col_name ) 
+        
+        DC_sorted_df['DC_eCDF_mme'] = DC_sorted_df.apply(lambda row : poisson.cdf(row[DC_col_name], lambda_mme),axis =1)
+        plot_KS_1_Sample_eCDF( DC_sorted_df, DC_col_name, max_diff_x, column_type.capitalize(),distribution_type)
+        
         
     if (distribution_type == 'geometric'):
         #Geometric distribution
@@ -180,7 +205,10 @@ def KS_1_sample_test(states_data,column_type, distribution_type):
         #MME parameters
         p_mme = geometric_para(mean)
         #Calls calculation of KS 1 sample statistic 
-        calc_KS_1_sample_test(x_points, [p_mme] , DC_distinct_df , 'geometric', column_type, DC_col_name)
+        max_diff_x = calc_KS_1_sample_test(x_points, [p_mme] , DC_distinct_df , 'geometric', column_type, DC_col_name)
+        
+        DC_sorted_df['DC_eCDF_mme'] = DC_sorted_df.apply(lambda row :  geom.cdf(row[DC_col_name], p_mme),axis =1)
+        plot_KS_1_Sample_eCDF( DC_sorted_df, DC_col_name, max_diff_x, column_type.capitalize(),distribution_type)
     
     if (distribution_type == 'binomial'):
         #Binomial distribution
@@ -189,7 +217,10 @@ def KS_1_sample_test(states_data,column_type, distribution_type):
         #MME parameters
         n_mme, p_mme = binomial_para(mean,variance)
         #Calls calculation of KS 1 sample statistic c
-        calc_KS_1_sample_test(x_points, [n_mme, p_mme] , DC_distinct_df , 'binomial', column_type, DC_col_name)
+        max_diff_x = calc_KS_1_sample_test(x_points, [n_mme, p_mme] , DC_distinct_df , 'binomial', column_type, DC_col_name)
+        
+        DC_sorted_df['DC_eCDF_mme'] = DC_sorted_df.apply(lambda row : binom.cdf(row[DC_col_name], n_mme,  p_mme),axis =1)
+        plot_KS_1_Sample_eCDF(DC_sorted_df, DC_col_name, max_diff_x, column_type.capitalize(),distribution_type)
 
     
 #Calculates p value for permutaiton test
@@ -249,21 +280,39 @@ def Permutation_test(states_data,column_type):
     
     if p_value_1000 <= critical_value:
         print("Rejected Null Hypothesis: We reject the hypothesis that the distribution of daily {0} is same in both CT and DC, as Permutation test p-value = {1} does not exceed threshold {2}".format(hypothesis_type, p_value_1000, critical_value))
+        print()
     else:
         print("Failed to reject Null Hypothesis: We accept the hypothesis that the distribution of daily {0} is same in both CT and DC, as Permutation test p-value = {1} exceeds threshold {2}".format(hypothesis_type, p_value_1000, critical_value))
+        print()
         
 #KS 1 sample test main function       
 def KS_1_sample_main(states_data):
+    print("***********KS_1_sample test starts here************")
+    print()
     KS_1_sample_test(states_data,'confirmed', 'poisson')
     KS_1_sample_test(states_data,'confirmed', 'geometric')
     KS_1_sample_test(states_data,'confirmed', 'binomial')
     KS_1_sample_test(states_data,'deaths', 'poisson')
     KS_1_sample_test(states_data,'deaths', 'geometric')
     KS_1_sample_test(states_data,'deaths', 'binomial')
+    print("********KS_1_sample test ends here*************")
+    print()
 
 #Permutation test main function       
 def Permutation_main(states_data):
+    print("************Permutation test starts here************")
+    print()
     Permutation_test(states_data,'confirmed')
     Permutation_test(states_data,'deaths')
-
-
+    print("**************Permutation test ends here***********")
+    print()
+    
+def main():
+    #Cleaning and removing outliers from data
+    data_raw, daily_data = clean.get_cleaned_data("../data/States Data/4.csv")
+    KS_1_sample_main(daily_data)
+    Permutation_main(daily_data)
+    
+if __name__=="__main__":
+    main()
+    
