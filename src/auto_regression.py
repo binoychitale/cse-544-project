@@ -39,6 +39,7 @@ def perform_auto_regression(data, order):
         print()
         MSE = 0
         MAPE = 0
+        mape_count = 0
         for end in range(22, 29):
             end_date = '2020-08-%s' % end
 
@@ -54,11 +55,13 @@ def perform_auto_regression(data, order):
             prediction = ar.predict(input_values)
             actual_value = data[data['Date'] == end_date][column].values[0]
             MSE += pow(prediction - actual_value, 2)
-            MAPE += abs(prediction - actual_value) / actual_value * 100
+            if actual_value != 0:
+                MAPE += abs(prediction - actual_value) / actual_value * 100
+                mape_count += 1
 
             print("Predicted %s on %s: %s" % (column, end_date, prediction))
         MSE /= len(range(22,29))
-        MAPE /= len(range(22, 29))
+        MAPE /= mape_count
 
         print ("MSE for %s: %s" % (column, MSE))
         print ("MAPE for %s: %s" % (column, MAPE))

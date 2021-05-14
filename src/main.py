@@ -10,12 +10,14 @@ import exploratory
 # 1) Clean dataset and detect outliers using Tukey’s rule. Also split given cumulative data into daily #cases/#deaths
 data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv", drop_outliers=True)
 data['Date'] = pd.to_datetime(data['Date'])
+daily_data['Date'] = pd.to_datetime(daily_data['Date'])
+
 #print(data)
 
 # 2a) Time Series analysis
-auto_regression.perform_auto_regression(data, 3)
-auto_regression.perform_auto_regression(data, 5)
-ewma.run_ewma_analysis(data)
+auto_regression.perform_auto_regression(daily_data, 3)
+auto_regression.perform_auto_regression(daily_data, 5)
+ewma.run_ewma_analysis(daily_data)
 
 # B) Exploratory tasks to be performed using US-all and X datasets. We have chosen our X dataset to be US domestic Flights cancellation data from Jan-Jun 2020.
 # Full dataset can be found at https://www.kaggle.com/akulbahl/covid19-airline-flight-delays-and-cancellations?select=jantojun2020.csv
