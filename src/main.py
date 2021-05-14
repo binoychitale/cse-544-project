@@ -3,7 +3,7 @@ import auto_regression
 import pandas as pd
 import numpy as np
 import ewma
-
+import chi_square
 import exploratory
 
 # A) Mandatory tasks to be performed on assigned COVID-19 dataset (4.csv)
@@ -28,3 +28,14 @@ monthly_cases_mean = exploratory.monthly_mean_daily_cases(us_all_daily_data, '20
 # Find months with min and max monthly cases in New York, which we will use later in the hypostheses for our inferences.
 # Both will be of the form '<month_number> <year>'. Eg: min='3 2020' denotes the month with least average cases is March 2020.
 min_month_NY, max_month_NY = monthly_cases_mean['NY'].idxmin(), monthly_cases_mean['NY'].idxmax()
+
+# We perform a chi-square test to check whether the presence of covid cases affected the number of flight cancellations.
+# We take the count of flights cancelled in the months with lowest, and highest covid cases,
+# and use them to test our hypothesis.
+# H_0: covid case count is independent of number of flight cancellations
+# H_1: covid case count is dependent of number of flight cancellations
+p_value, hyp_decision = chi_square.perform_chi_square_test(min_month_NY, max_month_NY, pd.read_csv("../data/X_flights_cancellation/jantojun2020.csv"))
+print ("Performed chi square test with\n"
+       "H_0: covid case count is independent of number of flight cancellations\n"
+       "H_1: covid case count is dependent of number of flight cancellations\n"
+       "p-value=%s, %s H_0" % (p_value, "Accept" if hyp_decision is True else "Reject"))

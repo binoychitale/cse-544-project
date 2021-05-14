@@ -1,7 +1,10 @@
 import scipy.stats
 
+date_col_us_all = 'Date'
+month_col_flights = 'MONTH'
+year_col_flights = 'YEAR'
 
-def perform_chi_square_test(matrix, alpha=0.05):
+def chi_square_test(matrix, alpha=0.05):
     row_totals = []
     col_totals = [0] * len(matrix[0])
     total = 0
@@ -19,7 +22,6 @@ def perform_chi_square_test(matrix, alpha=0.05):
     for (row_index, row) in enumerate(matrix):
         for (col_index, col) in enumerate(row):
             expected = col_totals[col_index] * (row_totals[row_index] / total)
-            print(expected)
             f_obs.append(col)
             f_exp.append(expected)
     # Note here that by default scipy takes dof to be k-1 where k is the number of cells.
@@ -30,4 +32,26 @@ def perform_chi_square_test(matrix, alpha=0.05):
         return p_value, False
     return p_value, True
 
-print(perform_chi_square_test([[48, 54, 19], [7, 5, 4], [55, 50, 25]]))
+
+def perform_chi_square_test(min_month_NY, max_month_NY, flight_data):
+
+    flights_data_NY = flight_data[
+        (flight_data['ORIGIN_STATE_ABR'] == 'NY') | (flight_data['DEST_STATE_ABR'] == 'NY')]
+
+    # X - Data for month with least average daily covid cases
+    min_month, min_year = int(min_month_NY.split(' ')[0]), int(min_month_NY.split(' ')[1])
+    X = flights_data_NY[
+        (flights_data_NY[month_col_flights] == min_month) & (flights_data_NY[year_col_flights] == min_year)]
+
+    # Y - Data for month with highest average daily covid cases
+    max_month, max_year = int(max_month_NY.split(' ')[0]), int(max_month_NY.split(' ')[1])
+    Y = flights_data_NY[
+        (flights_data_NY[month_col_flights] == max_month) & (flights_data_NY[year_col_flights] == max_year)]
+
+    min_month_cancellations = len(X[X['CANCELLED'] == 1])
+    min_month_on_time = len(X[X['CANCELLED'] == 0])
+
+    max_month_cancellations = len(Y[Y['CANCELLED'] == 1])
+    max_month_on_time = len(Y[Y['CANCELLED'] == 0])
+
+    return chi_square_test([[min_month_cancellations, max_month_cancellations], [min_month_on_time, max_month_on_time]])
