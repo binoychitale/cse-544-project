@@ -72,7 +72,8 @@ def one_tailed_unpaired_t_test(flights_data_NY, min_month_NY, max_month_NY):
     # t_df_alpha_by_2 = 2.002 for n = 28, m = 31, alpha = 0.05
     critical_value = round(t.ppf(1 - (alpha / 2), df=df), 3)
 
-    print("One-Tailed Unpaired T Test Result for comparing means of daily flight cancellation ratio in NY between months of least and highest daily covid averages")
+    print("{0} Exploratory X Dataset Inference 3: One-Tailed Unpaired T-Test {0}".format(20*"-"))
+    print("To compare means of daily flight cancellation ratio in NY between months of least and highest daily covid averages")
     print("Sample size of X = {0}, Sample size of Y = {1}, Sample pool std deviation = {2:.3f}".format(n, m, sample_pool_std_dev))
     # Condition for one-tailed T-test: reject H0 if T < -(critical_value)
     if T < -critical_value:

@@ -7,6 +7,7 @@ from ks_test import KS_2_Sample_Test
 from hypothesis_tests import run_hypothesis_tests
 from posterior import calculate_posterior
 
+import chi_square
 import exploratory
 
 # A) Mandatory tasks to be performed on assigned COVID-19 dataset (4.csv)
@@ -49,6 +50,10 @@ flights_data = pd.read_csv("../data/X_flights_cancellation/jantojun2020.csv")
 # Filter only the flights departing from / arriving to New York
 flights_data_NY = flights_data[(flights_data['ORIGIN_STATE_ABR'] == 'NY') | (flights_data['DEST_STATE_ABR'] == 'NY')]
 
+# Inference 2: We perform a chi-square test to check whether the presence of covid cases affected the number of flight cancellations.
+# We take the count of flights cancelled in the months with lowest, and highest covid cases, and use them to test our hypothesis.
+chi_square.perform_chi_square_test(min_month_NY, max_month_NY, flights_data)
+
 # Inference 3: Using T-Test to determine if covid-19 may have had an impact on daily domestic flight cancellation by comparing the means of
-#              cancellations in a month where there is minimum/no covid cases with a month having the highest average daily cases
+# cancellations in a month where there is minimum/no covid cases with a month having the highest average daily cases
 exploratory.one_tailed_unpaired_t_test(flights_data_NY, min_month_NY, max_month_NY)
