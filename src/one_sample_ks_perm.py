@@ -160,7 +160,7 @@ def calc_KS_1_sample_test(x_points, parameters_list, data, distribution_name, co
     hypothesis_type = 'confirmed positive cases' if column_type == 'confirmed' else column_type
 
     if d > critical_value:
-        print("Rejected Null Hypothesis: We reject the hypothesis that the distribution of daily {0} is same in both CT and DC, as KS Statistic d = {1} exceeds threshold {2}".format(hypothesis_type, d, critical_value))
+        print("Rejected Null Hypothesis: We reject the hypothesis that the distribution of daily {0} in DC is {3}, as KS Statistic d = {1} exceeds threshold {2}".format(hypothesis_type, d, critical_value, distribution_name))
         print()
     else:
         print("Failed to reject Null Hypothesis: We accept the hypothesis that the distribution of daily {0} is same in both CT and DC, as KS Statistic d = {1} does not exceed threshold {2}".format(hypothesis_type, d, critical_value))

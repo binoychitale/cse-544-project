@@ -16,10 +16,9 @@ import exploratory
 # A) Mandatory tasks to be performed on assigned COVID-19 dataset (4.csv)
 print("{0} A) Mandatory Tasks on assigned COVID-19 dataset (4.csv) {0}".format(30*"-"))
 # 1) Clean dataset and detect outliers using Tukey’s rule. Also split given cumulative data into daily #cases/#deaths
-data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv", drop_outliers=True)
+data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv", drop_outliers=False)
 data['Date'] = pd.to_datetime(data['Date'])
 daily_data['Date'] = pd.to_datetime(daily_data['Date'])
-
 #print(data)
 
 # 2a) Time Series analysis
