@@ -2,6 +2,7 @@ import pandas as pd
 import clean
 import auto_regression
 import ewma
+import one_sample_ks_perm
 from ks_test import KS_2_Sample_Test
 
 import exploratory
@@ -17,7 +18,9 @@ auto_regression.perform_auto_regression(data, 3)
 auto_regression.perform_auto_regression(data, 5)
 ewma.run_ewma_analysis(data)
 
-# 2c) Perform 2-Sample KS Test on the #cases/#deaths data of the 2 states
+# 2c) Perform 1/2-Sample KS and Permutations tests on the #cases/#deaths data of the 2 states
+one_sample_ks_perm.KS_1_sample_main(daily_data)
+one_sample_ks_perm.Permutation_main(daily_data)
 KS_2_Sample_Test(daily_data, 'confirmed')
 KS_2_Sample_Test(daily_data, 'deaths')
 
