@@ -4,6 +4,7 @@ import auto_regression
 import ewma
 import one_sample_ks_perm
 from ks_test import KS_2_Sample_Test
+from hypothesis_tests import run_hypothesis_tests
 
 import exploratory
 
@@ -17,6 +18,9 @@ data['Date'] = pd.to_datetime(data['Date'])
 auto_regression.perform_auto_regression(data, 3)
 auto_regression.perform_auto_regression(data, 5)
 ewma.run_ewma_analysis(data)
+
+# 2b) Wald's, Z and T Tests on the #cases/#deaths data of the 2 states in the given time range
+run_hypothesis_tests(daily_data)
 
 # 2c) Perform 1/2-Sample KS and Permutations tests on the #cases/#deaths data of the 2 states
 one_sample_ks_perm.KS_1_sample_main(daily_data)
