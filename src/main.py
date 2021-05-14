@@ -28,3 +28,12 @@ monthly_cases_mean = exploratory.monthly_mean_daily_cases(us_all_daily_data, '20
 # Find months with min and max monthly cases in New York, which we will use later in the hypostheses for our inferences.
 # Both will be of the form '<month_number> <year>'. Eg: min='3 2020' denotes the month with least average cases is March 2020.
 min_month_NY, max_month_NY = monthly_cases_mean['NY'].idxmin(), monthly_cases_mean['NY'].idxmax()
+
+# Read the X dataset, which will be the US flights data for all states from Jan-Jun 2020
+flights_data = pd.read_csv("../data/X_flights_cancellation/jantojun2020.csv")
+# Filter only the flights departing from / arriving to New York
+flights_data_NY = flights_data[(flights_data['ORIGIN_STATE_ABR'] == 'NY') | (flights_data['DEST_STATE_ABR'] == 'NY')]
+
+# Inference 3: Using T-Test to determine if covid-19 may have had an impact on daily domestic flight cancellation by comparing the means of
+#              cancellations in a month where there is minimum/no covid cases with a month having the highest average daily cases
+exploratory.one_tailed_unpaired_t_test(flights_data_NY, min_month_NY, max_month_NY)
