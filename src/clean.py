@@ -29,7 +29,7 @@ def get_cleaned_data(filename, us_all=False, drop_outliers=False):
 
         column_outliers = daily_column[(daily_column != 0) & ((daily_column < lower_threshold) | (daily_column > upper_threshold))].index
         outliers = outliers.union(column_outliers)
-        print ("\nColumn: %s \nDetected %s outlier rows \nIQR = %s \nlower thresold = %s \nupper thresold = %s" % (
+        print ("\nColumn: %s \nDetected %s outlier rows \nIQR = %s \nlower threshold = %s \nupper threshold = %s" % (
         column, len(column_outliers), IQR, lower_threshold, upper_threshold))
     
     if drop_outliers:
