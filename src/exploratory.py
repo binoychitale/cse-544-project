@@ -22,7 +22,7 @@ def monthly_mean_daily_cases(daily_data, l_date_range, u_date_range):
     # Use aggregation to find mean monthly cases for every state
     state_data[date_col_us_all] = pd.to_datetime(state_data[date_col_us_all])
     monthly_cases_mean = state_data.groupby(pd.Grouper(key=date_col_us_all, freq='1M')).mean()
-    monthly_cases_mean.index = monthly_cases_mean.index.strftime('%-m %Y')
+    monthly_cases_mean.index = monthly_cases_mean.index.strftime('%m %Y')
     
     return monthly_cases_mean
 
