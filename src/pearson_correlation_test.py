@@ -76,12 +76,9 @@ class USDataReader:
 
 
 # fetches per day cancelled flights with source or destination as state
-def get_cancelled_flights_df(state):
-    large_df = pd.read_csv(us_flight_data_file_path,
-                           usecols=['ORIGIN_STATE_ABR', 'DEST_STATE_ABR', 'CANCELLED', 'YEAR', 'MONTH', 'DAY_OF_MONTH'])
-    df = large_df.query('(ORIGIN_STATE_ABR == "{}" or  DEST_STATE_ABR == "{}")'.format(state, state)).drop(
-        ['ORIGIN_STATE_ABR', 'DEST_STATE_ABR'], axis=1)
-    return df.groupby(['YEAR', 'MONTH', 'DAY_OF_MONTH'], as_index=False).agg({'CANCELLED': ['sum']})
+def get_cancelled_flights_df(state, flights_df):
+    flights_df = flights_df[['YEAR', 'MONTH', 'DAY_OF_MONTH', 'CANCELLED']]
+    return flights_df.groupby(['YEAR', 'MONTH', 'DAY_OF_MONTH'], as_index=False).agg({'CANCELLED': ['sum']})
 
 
 # generates datasets X, Y needed for pearsons test
@@ -102,10 +99,10 @@ def get_datasets_for_pearsons_test(daily_cases_df, flight_df, date_from, date_to
 
 
 # dates should be between 22 Jan 2020 and 30 Jun 2020
-def perform_pearsons_correlation_test(state, date_from, date_to):
-    ny_daily_cases = USDataReader().get_filtered_daily_df(state, date_from, date_to)
-    cancelled_flights = get_cancelled_flights_df(state)
-    x, y = get_datasets_for_pearsons_test(ny_daily_cases, cancelled_flights, date_from, date_to)
+def perform_pearsons_correlation_test(state, date_from, date_to, flights_df):
+    daily_cases = USDataReader().get_filtered_daily_df(state, date_from, date_to)
+    cancelled_flights = get_cancelled_flights_df(state, flights_df)
+    x, y = get_datasets_for_pearsons_test(daily_cases, cancelled_flights, date_from, date_to)
     test = PearsonsTest(x, y)
     type_of_correlation, coefficient = test.perform_test()
     print('For State {} between dates {} and {}:\nLet X = Daily new cases and Y = Total flights cancelled\nUsing '
@@ -113,6 +110,3 @@ def perform_pearsons_correlation_test(state, date_from, date_to):
           'correlation : {}, Correlation coefficient : {}'.format(state, date_from, date_to, type_of_correlation,
                                                                   coefficient))
 
-
-if __name__ == '__main__':
-    perform_pearsons_correlation_test('NY', date(day=22, month=1, year=2020), date(day=30, month=6, year=2020))

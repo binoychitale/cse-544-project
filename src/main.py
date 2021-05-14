@@ -1,3 +1,5 @@
+from datetime import date
+
 import pandas as pd
 import clean
 import auto_regression
@@ -6,6 +8,7 @@ import one_sample_ks_perm
 from ks_test import KS_2_Sample_Test
 from hypothesis_tests import run_hypothesis_tests
 from posterior import calculate_posterior
+from pearson_correlation_test import perform_pearsons_correlation_test
 
 import chi_square
 import exploratory
@@ -52,6 +55,10 @@ min_month_NY, max_month_NY = monthly_cases_mean['NY'].idxmin(), monthly_cases_me
 flights_data = pd.read_csv("../data/X_flights_cancellation/jantojun2020.csv")
 # Filter only the flights departing from / arriving to New York
 flights_data_NY = flights_data[(flights_data['ORIGIN_STATE_ABR'] == 'NY') | (flights_data['DEST_STATE_ABR'] == 'NY')]
+
+# Inference 1: We perform pearson's correlation test to measure the correlation between number of cases and number of flight cancellations for the
+# state of New York in the range f Jan to Jun 2020
+perform_pearsons_correlation_test('NY', date(day=22, month=1, year=2020), date(day=30, month=6, year=2020), flights_data_NY)
 
 # Inference 2: We perform a chi-square test to check whether the presence of covid cases affected the number of flight cancellations.
 # We take the count of flights cancelled in the months with lowest, and highest covid cases, and use them to test our hypothesis.
