@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
+import math
 
 class AR:
     model = []
@@ -32,11 +33,16 @@ class AR:
 
 def perform_auto_regression(data, order):
     ar = AR(order)
-
+    fig, axs = plt.subplots(2, 2)
+    count = 0
     for column in data:
         if column == 'Date':
             continue
         print()
+        y_actual = []
+        y_predicted = []
+        x_axis = []
+
         MSE = 0
         MAPE = 0
         mape_count = 0
@@ -60,8 +66,18 @@ def perform_auto_regression(data, order):
                 mape_count += 1
 
             print("Predicted %s on %s: %s" % (column, end_date, prediction))
+            y_actual.append(actual_value)
+            y_predicted.append(prediction)
+            x_axis.append(end)
         MSE /= len(range(22,29))
         MAPE /= mape_count
 
         print ("MSE for %s: %s" % (column, MSE))
         print ("MAPE for %s: %s" % (column, MAPE))
+        plot = axs[math.floor(count/2), count % 2]
+        plot.set_title("AR(%s) for %s" % (order, column))
+        plot.plot(x_axis, y_actual, label="actual data")
+        plot.plot(x_axis, y_predicted, label="predicted data")
+        plot.legend()
+        count += 1
+    plt.show()
