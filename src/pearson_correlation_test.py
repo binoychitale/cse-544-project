@@ -42,38 +42,6 @@ class PearsonsTest:
             return "No correlation", pearson_coefficent
 
 
-class USDataReader:
-
-    def __init__(self):
-        self.__file_path = us_confirmed_data_file_path
-        self.__daily_df = None
-        self.__cumulative_df = None
-
-    def __read_csv(self):
-        self.__cumulative_df = pd.read_csv(self.__file_path)
-        state_names = self.__cumulative_df['State'].values
-        first_values = self.__cumulative_df.iloc[:, 1].values
-        self.__daily_df = self.__cumulative_df.diff(axis=1)
-        self.__daily_df['State'] = state_names
-        self.__daily_df.iloc[:, 1] = first_values
-
-    def __filter_df_by_state(self, state):
-        self.__daily_df = self.__daily_df.loc[self.__daily_df['State'] == state]
-
-    def __filter_df_by_dates(self, date_from, date_to):
-        columns = ['State']
-        for val in pd.date_range(start=date_from, end=date_to).values:
-            val = str(val)
-            columns.append(val[0:10])
-        self.__daily_df = self.__daily_df[columns]
-
-    def get_filtered_daily_df(self, state, date_from, date_to):
-        if self.__cumulative_df is None:
-            self.__read_csv()
-        self.__filter_df_by_state(state)
-        self.__filter_df_by_dates(date_from, date_to)
-        return self.__daily_df.copy()
-
 
 # fetches per day cancelled flights with source or destination as state
 def get_cancelled_flights_df(state, flights_df):
@@ -91,22 +59,20 @@ def get_datasets_for_pearsons_test(daily_cases_df, flight_df, date_from, date_to
     for dt in pd.date_range(date_from, date_to + timedelta(days=1)):
         date_column = dt.strftime("%Y-%m-%d")
         if (not flight_df.loc[(flight_df['DAY_OF_MONTH'] == dt.day) & (flight_df['MONTH'] == dt.month) & (
-                flight_df['YEAR'] == dt.year)].empty) and date_column in daily_cases_df.columns:
-            x.append(daily_cases_df.iloc[0][date_column])
+                flight_df['YEAR'] == dt.year)].empty) and (not daily_cases_df[daily_cases_df['Date'] == date_column].empty):
+            x.append(daily_cases_df[daily_cases_df['Date'] == date_column].iloc[0, 1])
             y.append(flight_df[(flight_df['DAY_OF_MONTH'] == dt.day) & (flight_df['MONTH'] == dt.month) & (
                         flight_df['YEAR'] == dt.year)].iloc[0][3])
     return x, y
 
 
 # dates should be between 22 Jan 2020 and 30 Jun 2020
-def perform_pearsons_correlation_test(state, date_from, date_to, flights_df):
-    daily_cases = USDataReader().get_filtered_daily_df(state, date_from, date_to)
+def perform_pearsons_correlation_test(state, date_from, date_to, flights_df, cases_df):
     cancelled_flights = get_cancelled_flights_df(state, flights_df)
-    x, y = get_datasets_for_pearsons_test(daily_cases, cancelled_flights, date_from, date_to)
+    x, y = get_datasets_for_pearsons_test(cases_df, cancelled_flights, date_from, date_to)
     test = PearsonsTest(x, y)
     type_of_correlation, coefficient = test.perform_test()
     print('For State {} between dates {} and {}:\nLet X = Daily new cases and Y = Total flights cancelled\nUsing '
           'Pearsons Correlation Test we get:\nType of '
           'correlation : {}, Correlation coefficient : {}'.format(state, date_from, date_to, type_of_correlation,
                                                                   coefficient))
-

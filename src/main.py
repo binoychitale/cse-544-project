@@ -58,7 +58,7 @@ flights_data_NY = flights_data[(flights_data['ORIGIN_STATE_ABR'] == 'NY') | (fli
 
 # Inference 1: We perform pearson's correlation test to measure the correlation between number of cases and number of flight cancellations for the
 # state of New York in the range f Jan to Jun 2020
-perform_pearsons_correlation_test('NY', date(day=22, month=1, year=2020), date(day=30, month=6, year=2020), flights_data_NY)
+perform_pearsons_correlation_test('NY', date(day=22, month=1, year=2020), date(day=30, month=6, year=2020), flights_data_NY, us_all_daily_data[['Date','NY']])
 
 # Inference 2: We perform a chi-square test to check whether the presence of covid cases affected the number of flight cancellations.
 # We take the count of flights cancelled in the months with lowest, and highest covid cases, and use them to test our hypothesis.
