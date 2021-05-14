@@ -2,8 +2,12 @@ import pandas
 import math
 import numpy as np
 
-def get_cleaned_data(filename):
-    data_raw = pandas.read_csv(filename)
+def get_cleaned_data(filename, us_all=False, drop_outliers=False):
+    if not us_all:
+        data_raw = pandas.read_csv(filename)
+    else:
+        data_raw = pandas.read_csv(filename).set_index('State').transpose().reset_index().rename(columns={'index': 'Date'})
+        data_raw.columns.name = None
     outliers = set()
     daily_data = pandas.DataFrame()
 
@@ -25,10 +29,11 @@ def get_cleaned_data(filename):
 
         column_outliers = daily_column[(daily_column != 0) & ((daily_column < lower_threshold) | (daily_column > upper_threshold))].index
         outliers = outliers.union(column_outliers)
-        print ("\nColumn: %s \nDropped %s outlier rows \nIQR = %s \nlower thresold = %s \nupper thresold = %s" % (
+        print ("\nColumn: %s \nDetected %s outlier rows \nIQR = %s \nlower thresold = %s \nupper thresold = %s" % (
         column, len(column_outliers), IQR, lower_threshold, upper_threshold))
-
-    data_raw.drop(outliers, inplace=True)
-    daily_data.drop(outliers, inplace=True)
+    
+    if drop_outliers:
+        data_raw.drop(outliers, inplace=True)
+        daily_data.drop(outliers, inplace=True)
 
     return data_raw, daily_data
