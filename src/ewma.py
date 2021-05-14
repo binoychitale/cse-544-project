@@ -36,7 +36,7 @@ def run_ewma_analysis(data):
                 training_data = data[(data['Date'] >= '2020-08-01') & (data['Date'] < end_date)]
 
                 prediction = predict_ewma(alpha, np.float_(np.array(training_data[column])))
-                print("Predicted %s on %s for alpha=%s: %s" % (column, end_date, alpha, prediction))
+                print("Predicting %s on %s for alpha=%s using EWMA(%s): %s" % (column, end_date, alpha, alpha, prediction))
 
                 actual_value = data[data['Date'] == end_date][column].values[0]
                 MSE += pow(prediction - actual_value, 2)

@@ -65,7 +65,7 @@ def perform_auto_regression(data, order):
                 MAPE += abs(prediction - actual_value) / actual_value * 100
                 mape_count += 1
 
-            print("Predicted %s on %s: %s" % (column, end_date, prediction))
+            print("Predicting %s on %s using AR(%s): %s" % (column, end_date, order, prediction))
             y_actual.append(actual_value)
             y_predicted.append(prediction)
             x_axis.append(end)
