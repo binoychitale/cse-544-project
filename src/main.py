@@ -11,8 +11,8 @@ import chi_square
 import exploratory
 
 # A) Mandatory tasks to be performed on assigned COVID-19 dataset (4.csv)
-# 1) Clean dataset and detect outliers using Tukey’s rule. Also split given cumulative data into daily #cases/#deaths
-data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv", drop_outliers=True)
+# 1) Clean dataset and detect outliers using Tukey’s rule. Also split given cumulative data into daily cases/deaths
+data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv", drop_outliers=False)
 data['Date'] = pd.to_datetime(data['Date'])
 daily_data['Date'] = pd.to_datetime(daily_data['Date'])
 
