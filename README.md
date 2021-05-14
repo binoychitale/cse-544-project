@@ -6,6 +6,7 @@ The aim of this project is to apply techniques learned in class to a real-world 
 
 ### Unzip the data-set
 Before running the project, please unzip the data-set in `data/X_flights_cancellation/jantojun2020.csv.zip`
+Copy the csv file named jantojun2020 to X_flights_cancellation folder after extracting. If file is not getting copied due to windows naming error then please change name of the unzipped folder from 'jantojun2020.csv' to something else
 
 ### Execute the project
 To run the project, run the following in the `src` directory:
