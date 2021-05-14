@@ -1,9 +1,9 @@
-import clean
 import pandas as pd
-import numpy as np
-import ewma
+import clean
 import auto_regression
+import ewma
 import one_sample_ks_perm
+from ks_test import KS_2_Sample_Test
 
 import exploratory
 
@@ -18,9 +18,11 @@ auto_regression.perform_auto_regression(data, 3)
 auto_regression.perform_auto_regression(data, 5)
 ewma.run_ewma_analysis(data)
 
-# 2c) Perform 1-Sample KS and Permutations tests on the #cases/#deaths data of the 2 states
+# 2c) Perform 1/2-Sample KS and Permutations tests on the #cases/#deaths data of the 2 states
 one_sample_ks_perm.KS_1_sample_main(daily_data)
 one_sample_ks_perm.Permutation_main(daily_data)
+KS_2_Sample_Test(daily_data, 'confirmed')
+KS_2_Sample_Test(daily_data, 'deaths')
 
 # B) Exploratory tasks to be performed using US-all and X datasets. We have chosen our X dataset to be US domestic Flights cancellation data from Jan-Jun 2020.
 # Full dataset can be found at https://www.kaggle.com/akulbahl/covid19-airline-flight-delays-and-cancellations?select=jantojun2020.csv
