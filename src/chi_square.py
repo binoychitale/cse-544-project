@@ -56,7 +56,7 @@ def perform_chi_square_test(min_month_NY, max_month_NY, flight_data):
     max_month_on_time = len(Y[Y['CANCELLED'] == 0])
 
     p_value, hyp_decision = chi_square_test([[min_month_cancellations, max_month_cancellations], [min_month_on_time, max_month_on_time]])
-    print("{0} Exploratory X Dataset Inference 2: Chi-Square Test {0}".format(20*"-"))
+    print("\n{0} Exploratory X Dataset Inference 2: Chi-Square Test {0}".format(20*"-"))
     print ("Performed chi square test with\n"
        "H_0: covid case count is independent of number of flight cancellations\n"
        "H_1: covid case count is dependent of number of flight cancellations\n"

@@ -14,12 +14,15 @@ import exploratory
 # 1) Clean dataset and detect outliers using Tukey’s rule. Also split given cumulative data into daily #cases/#deaths
 data, daily_data = clean.get_cleaned_data("../data/States Data/4.csv", drop_outliers=True)
 data['Date'] = pd.to_datetime(data['Date'])
+daily_data['Date'] = pd.to_datetime(daily_data['Date'])
+
 #print(data)
 
 # 2a) Time Series analysis
-auto_regression.perform_auto_regression(data, 3)
-auto_regression.perform_auto_regression(data, 5)
-ewma.run_ewma_analysis(data)
+print("\n{0} 2a) Time Series Analysis {0}".format(20*"-"))
+auto_regression.perform_auto_regression(daily_data, 3)
+auto_regression.perform_auto_regression(daily_data, 5)
+ewma.run_ewma_analysis(daily_data)
 
 # 2b) Wald's, Z and T Tests on the #cases/#deaths data of the 2 states in the given time range
 run_hypothesis_tests(daily_data)
