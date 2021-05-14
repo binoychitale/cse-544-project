@@ -1,8 +1,11 @@
+import pandas as pd
 import clean
 import auto_regression
-import pandas as pd
-import numpy as np
 import ewma
+import one_sample_ks_perm
+from ks_test import KS_2_Sample_Test
+from hypothesis_tests import run_hypothesis_tests
+from posterior import calculate_posterior
 
 import exploratory
 
@@ -16,6 +19,18 @@ data['Date'] = pd.to_datetime(data['Date'])
 auto_regression.perform_auto_regression(data, 3)
 auto_regression.perform_auto_regression(data, 5)
 ewma.run_ewma_analysis(data)
+
+# 2b) Wald's, Z and T Tests on the #cases/#deaths data of the 2 states in the given time range
+run_hypothesis_tests(daily_data)
+
+# 2c) Perform 1/2-Sample KS and Permutations tests on the #cases/#deaths data of the 2 states
+one_sample_ks_perm.KS_1_sample_main(daily_data)
+one_sample_ks_perm.Permutation_main(daily_data)
+KS_2_Sample_Test(daily_data, 'confirmed')
+KS_2_Sample_Test(daily_data, 'deaths')
+
+# 2d) Apply Bayesian Inference to calculate the posterior for combined deaths data
+calculate_posterior(daily_data)
 
 # B) Exploratory tasks to be performed using US-all and X datasets. We have chosen our X dataset to be US domestic Flights cancellation data from Jan-Jun 2020.
 # Full dataset can be found at https://www.kaggle.com/akulbahl/covid19-airline-flight-delays-and-cancellations?select=jantojun2020.csv
