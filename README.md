@@ -3,9 +3,14 @@
 The aim of this project is to apply techniques learned in class to a real-world data-set
 
 ## Running the project
+
+### Unzip the data-set
+Before running the project, please unzip the data-set in `data/X_flights_cancellation/jantojun2020.csv.zip`
+
+### Execute the project
 To run the project, run the following in the `src` directory:
 
-```
+```python
 python3 main.py
 ```
 ## Data sets
