@@ -20,6 +20,7 @@ def run_ewma_analysis(data):
         for alpha in alpha_values:
             MSE = 0
             MAPE = 0
+            mape_count = 0
             for end in range(22, 29):
                 end_date = '2020-08-%s' % end
 
@@ -30,9 +31,11 @@ def run_ewma_analysis(data):
 
                 actual_value = data[data['Date'] == end_date][column].values[0]
                 MSE += pow(prediction - actual_value, 2)
-                MAPE += abs(prediction - actual_value) / actual_value * 100
+                if actual_value != 0:
+                    MAPE += abs(prediction - actual_value) / actual_value * 100
+                    mape_count += 1
 
             MSE /= len(range(22, 29))
-            MAPE /= len(range(22, 29))
+            MAPE /= mape_count
             print ("MSE for alpha = %s: %s" % (alpha, MSE))
             print ("MAPE for alpha = %s: %s" % (alpha, MAPE))
