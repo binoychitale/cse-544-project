@@ -1,8 +1,12 @@
+import pandas as pd
 import clean
 import auto_regression
-import pandas as pd
-import numpy as np
 import ewma
+import one_sample_ks_perm
+from ks_test import KS_2_Sample_Test
+from hypothesis_tests import run_hypothesis_tests
+from posterior import calculate_posterior
+
 import chi_square
 import exploratory
 
@@ -17,6 +21,18 @@ auto_regression.perform_auto_regression(data, 3)
 auto_regression.perform_auto_regression(data, 5)
 ewma.run_ewma_analysis(data)
 
+# 2b) Wald's, Z and T Tests on the #cases/#deaths data of the 2 states in the given time range
+run_hypothesis_tests(daily_data)
+
+# 2c) Perform 1/2-Sample KS and Permutations tests on the #cases/#deaths data of the 2 states
+one_sample_ks_perm.KS_1_sample_main(daily_data)
+one_sample_ks_perm.Permutation_main(daily_data)
+KS_2_Sample_Test(daily_data, 'confirmed')
+KS_2_Sample_Test(daily_data, 'deaths')
+
+# 2d) Apply Bayesian Inference to calculate the posterior for combined deaths data
+calculate_posterior(daily_data)
+
 # B) Exploratory tasks to be performed using US-all and X datasets. We have chosen our X dataset to be US domestic Flights cancellation data from Jan-Jun 2020.
 # Full dataset can be found at https://www.kaggle.com/akulbahl/covid19-airline-flight-delays-and-cancellations?select=jantojun2020.csv
 _, us_all_daily_data = clean.get_cleaned_data("../data/US-all/US_confirmed.csv", us_all=True, drop_outliers=False)
@@ -29,13 +45,15 @@ monthly_cases_mean = exploratory.monthly_mean_daily_cases(us_all_daily_data, '20
 # Both will be of the form '<month_number> <year>'. Eg: min='3 2020' denotes the month with least average cases is March 2020.
 min_month_NY, max_month_NY = monthly_cases_mean['NY'].idxmin(), monthly_cases_mean['NY'].idxmax()
 
-# We perform a chi-square test to check whether the presence of covid cases affected the number of flight cancellations.
-# We take the count of flights cancelled in the months with lowest, and highest covid cases,
-# and use them to test our hypothesis.
-# H_0: covid case count is independent of number of flight cancellations
-# H_1: covid case count is dependent of number of flight cancellations
-p_value, hyp_decision = chi_square.perform_chi_square_test(min_month_NY, max_month_NY, pd.read_csv("../data/X_flights_cancellation/jantojun2020.csv"))
-print ("Performed chi square test with\n"
-       "H_0: covid case count is independent of number of flight cancellations\n"
-       "H_1: covid case count is dependent of number of flight cancellations\n"
-       "p-value=%s, %s H_0" % (p_value, "Accept" if hyp_decision is True else "Reject"))
+# Read the X dataset, which will be the US flights data for all states from Jan-Jun 2020
+flights_data = pd.read_csv("../data/X_flights_cancellation/jantojun2020.csv")
+# Filter only the flights departing from / arriving to New York
+flights_data_NY = flights_data[(flights_data['ORIGIN_STATE_ABR'] == 'NY') | (flights_data['DEST_STATE_ABR'] == 'NY')]
+
+# Inference 2: We perform a chi-square test to check whether the presence of covid cases affected the number of flight cancellations.
+# We take the count of flights cancelled in the months with lowest, and highest covid cases, and use them to test our hypothesis.
+chi_square.perform_chi_square_test(min_month_NY, max_month_NY, flights_data)
+
+# Inference 3: Using T-Test to determine if covid-19 may have had an impact on daily domestic flight cancellation by comparing the means of
+# cancellations in a month where there is minimum/no covid cases with a month having the highest average daily cases
+exploratory.one_tailed_unpaired_t_test(flights_data_NY, min_month_NY, max_month_NY)
