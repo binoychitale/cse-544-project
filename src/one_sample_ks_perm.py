@@ -287,22 +287,16 @@ def Permutation_test(states_data,column_type):
         
 #KS 1 sample test main function       
 def KS_1_sample_main(states_data):
-    print("***********KS_1_sample test starts here************")
-    print()
+    print("{0} 2c) KS_1_sample test starts here {0}".format(20*"-"))
     KS_1_sample_test(states_data,'confirmed', 'poisson')
     KS_1_sample_test(states_data,'confirmed', 'geometric')
     KS_1_sample_test(states_data,'confirmed', 'binomial')
     KS_1_sample_test(states_data,'deaths', 'poisson')
     KS_1_sample_test(states_data,'deaths', 'geometric')
     KS_1_sample_test(states_data,'deaths', 'binomial')
-    print("********KS_1_sample test ends here*************")
-    print()
 
 #Permutation test main function       
 def Permutation_main(states_data):
-    print("************Permutation test starts here************")
-    print()
+    print("{0} 2c) Permutation test starts here {0}".format(20*"-"))
     Permutation_test(states_data,'confirmed')
     Permutation_test(states_data,'deaths')
-    print("**************Permutation test ends here***********")
-    print()

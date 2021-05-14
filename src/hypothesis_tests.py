@@ -165,6 +165,7 @@ def run_hypothesis_tests(daily_data):
     mar_21_deaths_CT = daily_data[mar_21_range][CT_deaths].to_numpy()
     mar_21_deaths_DC = daily_data[mar_21_range][DC_deaths].to_numpy()
     
+    print("\n{0} 2b) Wald's, Z and T Hypotheses Tests {0}".format(20*"-"))
     # In all of the 1-Sample tests below, we are considering March data for running the tests, and Feb data for calculating the assumed true mean
     print("{0} Wald's 1-Sample Test {0}".format(20*"-"))
     # 1-Sample Wald's Test for confirmed cases in CT and DC

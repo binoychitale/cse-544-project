@@ -37,6 +37,7 @@ def calculate_posterior(daily_data):
     beta = lambda_mme
 
     plt.figure('Posterior Distribution', figsize=(15,8))
+    print("{0} 2d) Posterior Distributions of λ {0}".format(20*"-"))
     # Find posterior from weeks 5-8
     for week in range(5, 9):
         week_end_date = (datetime.strptime(start_date, date_format) + timedelta(weeks=week)).strftime(date_format) 

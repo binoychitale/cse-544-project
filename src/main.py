@@ -19,6 +19,7 @@ daily_data['Date'] = pd.to_datetime(daily_data['Date'])
 #print(data)
 
 # 2a) Time Series analysis
+print("\n{0} 2a) Time Series Analysis {0}".format(20*"-"))
 auto_regression.perform_auto_regression(daily_data, 3)
 auto_regression.perform_auto_regression(daily_data, 5)
 ewma.run_ewma_analysis(daily_data)
